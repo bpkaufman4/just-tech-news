@@ -4,9 +4,7 @@ const { User } = require('../../models');
 // GET /api/users
 router.get('/', (req, res) => {
     // Access our User model and run .findAll() method
-    User.findAll({
-        attributes: { exclude: ['password'] }
-    })
+    User.findAll()
     .then(dbUserData => res.json(dbUserData))
     .catch(err => {
         console.log(err);
@@ -17,7 +15,6 @@ router.get('/', (req, res) => {
 // GET /api/users/1
 router.get('/:id', (req, res) => {
     User.findOne({
-        attributes: { exclude: ['password']},
         where: {
             id: req.params.id
         }
@@ -67,6 +64,13 @@ router.put('/:id', (req, res) => {
         console.log(err);
         res.status(500).json(err);
     });
+
+    User.update(req.body, {
+        individualHooks: true,
+        where: {
+            id: req.params.id
+        }
+    })
 });
 
 // DELETE /api/users/1
